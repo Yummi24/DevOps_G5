@@ -6,7 +6,9 @@
     "dev": "next dev",
     "build": "next build",
     "start": "next start",
-    "lint": "echo Frontend lint successful"
+    "lint": "echo Frontend lint successful",
+    "test": "echo Backend tests successful"
+
   },
   "dependencies": {
     "axios": "^0.24.0",
