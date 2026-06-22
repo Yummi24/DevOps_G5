@@ -1,3 +1,9 @@
+# BrainBytes AI Tutoring Platform
+
+![CI Status](https://github.com/FelicityS1/DevOps_G5/actions/workflows/ci.yml/badge.svg)
+
+![Docker Build Status](https://github.com/FelicityS1/DevOps_G5/actions/workflows/build.yml/badge.svg)
+
 BrainBytes AI Tutor
 Project Overview
 
