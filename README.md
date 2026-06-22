@@ -4,6 +4,8 @@
 
 ![Docker Build Status](https://github.com/FelicityS1/DevOps_G5/actions/workflows/build.yml/badge.svg)
 
+![BrainBytes CI/CD](https://github.com/FelicityS1/DevOps_G5/actions/workflows/main.yml/badge.svg)
+
 BrainBytes AI Tutor
 Project Overview
 
