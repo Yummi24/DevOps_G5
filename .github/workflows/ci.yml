@@ -2,9 +2,9 @@ name: BrainBytes CI
 
 on:
   push:
-    branches: [ main, development ]
+   branches: [ main, development, github-actions ]
   pull_request:
-    branches: [ main, development ]
+    branches: [ main, development, github-actions ]
 
 jobs:
   build:

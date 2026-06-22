@@ -2,7 +2,7 @@ name: BrainBytes Docker Build
 
 on:
   push:
-    branches: [ main, development ]
+    branches: [ main, development, github-actions ]
     paths-ignore:
       - '**.md'
       - 'docs/**'
