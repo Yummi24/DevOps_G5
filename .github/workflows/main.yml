@@ -1,11 +1,11 @@
 name: BrainBytes CI/CD
 
 on:
- push:
-  branches: [ main, development, github-actions ]
- pull_request:
-  branches: [ main, development, github-actions ]
- workflow_dispatch:
+  push:
+    branches: [ main, development, github-actions ]
+  pull_request:
+    branches: [ main, development, github-actions ]
+  workflow_dispatch:
 
 jobs:
   lint:
