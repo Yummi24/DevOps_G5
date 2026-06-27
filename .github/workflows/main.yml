@@ -93,7 +93,11 @@ jobs:
         with:
           context: ./backend
           push: false
-          tags: brainbytes/backend:latest
+          
+      - name: Install Docker Compose
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y docker-compose
 
       - name: Test Docker Compose
         run: |
