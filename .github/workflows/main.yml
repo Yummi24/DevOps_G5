@@ -11,6 +11,7 @@ jobs:
   lint:
     name: Lint Code
     runs-on: ubuntu-latest
+    timeout-minutes: 5
 
     steps:
       - name: Check out repository
@@ -43,9 +44,10 @@ jobs:
 
     strategy:
       matrix:
-        node-version: [14.x, 16.x, 18.x]
+        node-version: [16.x, 18.x, 20.x]
 
     runs-on: ubuntu-latest
+    timeout-minutes: 10
         
     steps:
         - name: Check out repository
@@ -82,7 +84,7 @@ jobs:
     name: Build Docker Images
     needs: lint
     runs-on: ubuntu-latest
-
+    timeout-minutes: 15
 
     steps:
       - name: Check out repository
@@ -129,6 +131,6 @@ jobs:
       
       - name: Notify build failure
         if: failure()
-        run: echo "❌ BrainBytes CI/CD workflow failed!"
+        run: echo " BrainBytes CI/CD workflow failed!"
 
 
