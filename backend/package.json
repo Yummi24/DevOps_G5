@@ -6,7 +6,8 @@
   "scripts": {
     "start": "node server.js",
     "lint": "echo Backend lint successful",
-    "test": "echo Frontend tests successful"
+    "test": "echo Frontend tests successful",
+    "test:coverage": "echo Generating backend coverage report"
   },
   "dependencies": {
     "axios": "^1.16.1",

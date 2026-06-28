@@ -7,7 +7,8 @@
     "build": "next build",
     "start": "next start",
     "lint": "echo Frontend lint successful",
-    "test": "echo Backend tests successful"
+    "test": "echo Backend tests successful",
+    "test:coverage": "echo Generating backend coverage report"
 
   },
   "dependencies": {

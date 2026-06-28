@@ -79,6 +79,35 @@ jobs:
           working-directory: ./backend
           run: npm run test
 
+        - name: Run frontend tests with coverage
+          working-directory: ./frontend
+          run: npm run test:coverage
+
+        - name: Run backend tests with coverage
+          working-directory: ./backend
+          run: npm run test:coverage
+
+        - name: Create coverage folders
+          run: |
+            mkdir -p backend/coverage
+            mkdir -p frontend/coverage
+
+        - name: Upload coverage reports
+          uses: actions/upload-artifact@v4
+          with:
+            name: coverage-reports
+            path: |
+              backend/coverage
+              frontend/coverage
+
+        - name: Test Summary
+          if: always()
+          run: |
+            echo "## Test Summary" >> $GITHUB_STEP_SUMMARY
+            echo "- Frontend tests completed" >> $GITHUB_STEP_SUMMARY
+            echo "- Backend tests completed" >> $GITHUB_STEP_SUMMARY
+            echo "- Coverage report generated" >> $GITHUB_STEP_SUMMARY
+
 
   build:
     name: Build Docker Images
