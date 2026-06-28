@@ -1,9 +1,17 @@
 const OpenAI = require("openai");
 
-const client = new OpenAI({
-  apiKey: process.env.GROQ_API_KEY,
-  baseURL: "https://api.groq.com/openai/v1",
-});
+let client = null;
+
+function getClient() {
+  if (!client) {
+    client = new OpenAI({
+      apiKey: process.env.GROQ_API_KEY,
+      baseURL: "https://api.groq.com/openai/v1",
+    });
+  }
+
+  return client;
+}
 
 // Initialize our AI service
 const initializeAI = () => {
@@ -133,7 +141,7 @@ if (category === 'math') {
   // For other questions, try the API with a strict timeout
   try {
     // Using a smaller model that responds faster
-  const completion = await client.chat.completions.create({
+  const completion = await getClient().chat.completions.create({
   model: "llama-3.1-8b-instant",
   max_tokens: 300,
   messages: [

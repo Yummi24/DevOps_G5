@@ -5,10 +5,11 @@
   "main": "server.js",
   "scripts": {
     "start": "node server.js",
-    "lint": "echo Backend lint successful",
-    "lint:js": "echo Generating ESLint report",
-    "test": "echo Frontend tests successful",
-    "test:coverage": "echo Generating backend coverage report",
+    "lint": "eslint .",
+    "lint:js": "eslint .",
+    "test": "jest",
+    "test:watch": "jest --watch",
+    "test:coverage": "jest --coverage",
     "format:check": "echo Checking backend formatting"
   },
   "dependencies": {
@@ -19,5 +20,9 @@
     "mongoose": "^5.13.7",
     "node-fetch": "^2.6.7",
     "openai": "^6.37.0"
+  },
+  "devDependencies": {
+    "jest": "^29.7.0",
+    "supertest": "^7.2.2"
   }
 }
