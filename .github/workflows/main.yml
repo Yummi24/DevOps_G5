@@ -117,5 +117,13 @@ jobs:
           docker-compose -f docker-compose.yml up -d
           docker-compose ps
           docker-compose down
+      
+      - name: Notify build success
+        if: success()
+        run: echo " BrainBytes CI/CD workflow completed successfully!"
+      
+      - name: Notify build failure
+        if: failure()
+        run: echo "❌ BrainBytes CI/CD workflow failed!"
 
 
