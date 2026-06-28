@@ -1,0 +1,66 @@
+name: BrainBytes Deploy
+
+on:
+    push:
+        branches:
+        - main
+        - development
+        - github-actions
+    workflow_dispatch:
+
+jobs:
+    deploy:
+        name: Deploy to Test Environment
+        runs-on: ubuntu-latest
+        environment: test
+
+
+        steps:
+          - name: Check out repository
+            uses: actions/checkout@v4
+
+          - name: Set up Node.js
+            uses: actions/setup-node@v4
+            with:
+                node-version: '16'
+
+          - name: Build Docker images
+            run: docker compose build
+
+          - name: Prepare deployment
+            run: |
+                echo "DEPLOY_TIME=$(date)" >> $GITHUB_ENV
+                echo "DEPLOY_SHA=${{ github.sha }}" >> $GITHUB_ENV
+                echo "DEPLOY_ENV=test" >> $GITHUB_ENV
+
+          - name: Display deployment information
+            run: |
+                echo "Deployment Time: $DEPLOY_TIME"
+                echo "Commit: $DEPLOY_SHA"
+
+          - name: Deploy Development Branch
+            if: github.ref == 'refs/heads/development'
+            run: |
+                echo "Deploying DEVELOPMENT version..."
+
+          - name: Deploy Main Branch
+            if: github.ref == 'refs/heads/main'
+            run: |
+                echo "Deploying PRODUCTION version..."
+        
+          - name: Deploy GitHub Actions Branch
+            if: github.ref == 'refs/heads/github-actions'
+            run: |
+                echo "Deploying TEST version..."
+
+          - name: Deploy to test environment
+            run: |
+                echo "Deploying BrainBytes..."
+                echo "This is a placeholder deployment."
+                echo "Future deployment target: Oracle Cloud"
+
+          - name: Verify deployment
+            run: |
+                echo "Verifying deployment..."
+                echo "Deployment completed successfully."
+
