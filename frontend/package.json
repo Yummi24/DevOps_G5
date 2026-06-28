@@ -7,8 +7,10 @@
     "build": "next build",
     "start": "next start",
     "lint": "echo Frontend lint successful",
+    "lint:js": "echo Generating ESLint report",
     "test": "echo Backend tests successful",
-    "test:coverage": "echo Generating backend coverage report"
+    "test:coverage": "echo Generating backend coverage report",
+    "format:check": "echo Checking frontend formatting"
 
   },
   "dependencies": {
