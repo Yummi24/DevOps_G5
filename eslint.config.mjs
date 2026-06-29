@@ -31,16 +31,24 @@ export default [
     // Lint only JS/TS files in backend (excluding .test files)
     files: ['backend/**/*.{js,ts}', '!backend/**/*.test.{js,ts}'],
     languageOptions: {
-      ecmaVersion: 'latest',
-      sourceType: 'commonjs',
+      ecmaVersion: "latest",
+      sourceType: "commonjs",
       globals: {
-        require: 'readonly',
-        module: 'readonly',
-        exports: 'readonly',
-        process: 'readonly',
-        console: 'readonly',
+        require: "readonly",
+        module: "readonly",
+        exports: "readonly",
+        process: "readonly",
+        console: "readonly",
+
+        setTimeout: "readonly",
+        clearTimeout: "readonly",
+        setInterval: "readonly",
+        clearInterval: "readonly",
+        Buffer: "readonly",
+        __dirname: "readonly",
+        __filename: "readonly",
       },
-    },
+},
     rules: {
       ...js.configs.recommended.rules,
       'no-console': 'off',

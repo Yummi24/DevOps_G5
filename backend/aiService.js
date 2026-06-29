@@ -59,7 +59,7 @@ async function generateResponse(question, selectedSubject = 'General') {
   lowerQuestion.includes('divide') ||
   lowerQuestion.includes('addition') ||
   lowerQuestion.includes('subtraction') ||
-  /[+\-*\/=]/.test(lowerQuestion);
+  /[+\-*/=]/.test(lowerQuestion);
   
   const isHistory = lowerQuestion.includes('history') ||
                     lowerQuestion.includes('capital') ||

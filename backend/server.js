@@ -2,10 +2,6 @@ require('dotenv').config();
 
 const app = require('./app');
 
-const userRoutes = require('./routes/userRoutes');
-const materialRoutes = require('./routes/materialRoutes');
-const chatRoutes = require('./routes/chatRoutes');
-
 const mongoose = require('mongoose');
 const aiService = require('./aiService');
 
