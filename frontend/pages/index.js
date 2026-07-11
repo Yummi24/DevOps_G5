@@ -2,6 +2,8 @@ import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
 
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
+
 export default function Home() {
   const [recentActivity, setRecentActivity] = useState([]);
   const [messageCount, setMessageCount] = useState(0);
@@ -22,7 +24,7 @@ export default function Home() {
   try {
 
     const response = await axios.get(
-      `http://localhost:3000/api/chat/history/${sessionId}`
+      `${API_URL}/api/chat/history/${sessionId}`
     );
 
     setRecentActivity(response.data.messages);
@@ -38,7 +40,7 @@ export default function Home() {
   const fetchMessages = async (sid) => {
     try {
       const response = await axios.get(
-  `http://localhost:3000/api/chat/history/${sid}`);    
+  `${API_URL}/api/chat/history/${sid}`);    
       setMessages(response.data.messages);
       setLoading(false);
     } catch (error) {
@@ -54,7 +56,7 @@ export default function Home() {
       .split(',')
       .map(subject => subject.trim());
 
-    await axios.post('http://localhost:3000/api/users', {
+    await axios.post(`${API_URL}/api/users`, {
       name,
       email,
       preferredSubjects: subjectsArray
@@ -96,7 +98,7 @@ export default function Home() {
       
       // Send to backend and get AI response
       const response = await axios.post(
-         'http://localhost:3000/api/chat/send',
+         `${API_URL}/api/chat/send`,
           {
               message: userMsg,
               sessionId: sessionId,
