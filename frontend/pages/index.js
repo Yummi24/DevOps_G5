@@ -113,6 +113,9 @@ export default function Home() {
         // Add the real messages from the API
         return [...filteredMessages, response.data.userMessage, response.data.aiMessage];
       });
+
+      // Refresh dashboard stats after a successful send
+      fetchDashboardData();
     } catch (error) {
       console.error('Error posting message:', error);
       // Show error in chat
