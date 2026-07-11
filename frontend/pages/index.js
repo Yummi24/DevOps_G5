@@ -140,27 +140,12 @@ export default function Home() {
 
 
   useEffect(() => {
-  const storedSessionId = localStorage.getItem('chatSessionId');
+  // Always start a brand new session on page load (no persistence)
+  const newSessionId = crypto.randomUUID();
 
-  if (storedSessionId) {
-    setSessionId(storedSessionId);
-
-    fetchMessages(storedSessionId);
-
-  } else {
-
-    const newSessionId = crypto.randomUUID();
-
-    localStorage.setItem(
-      'chatSessionId',
-      newSessionId
-    );
-
-    setSessionId(newSessionId);
-
-     setMessages([]);
-     setLoading(false);
-  }
+  setSessionId(newSessionId);
+  setMessages([]);
+  setLoading(false);
 }, []);
 
 useEffect(() => {
