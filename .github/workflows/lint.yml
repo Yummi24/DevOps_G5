@@ -1,0 +1,64 @@
+name: BrainBytes Lint
+
+on:
+  push:
+    branches: [ main, development, github-actions ]
+  pull_request:
+    branches: [ main, development, github-actions ]
+
+jobs:
+  lint:
+    name: Code Quality Checks
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install root dependencies
+        run: npm ci
+
+      - name: Install frontend dependencies
+        working-directory: ./frontend
+        run: npm install
+
+      - name: Lint frontend code
+        working-directory: ./frontend
+        run: npm run lint
+      
+      - name: Run ESLint
+        working-directory: ./frontend
+        run: |
+           npm run lint:js -- --format json --output-file eslint-report.json || true
+
+      - name: Check frontend formatting
+        working-directory: ./frontend
+        run: npm run format:check
+
+      - name: Install backend dependencies
+        working-directory: ./backend
+        run: npm install
+
+      - name: Lint backend code
+        working-directory: ./backend
+        run: npm run lint
+
+      - name: Check backend formatting
+        working-directory: ./backend
+        run: npm run format:check
+
+      - name: Check for vulnerabilities
+        run: npm audit --json || true
+
+      - name: Check for large files
+        run: |
+          find . -type f -size +10M
+
+      - name: Check for potential secrets
+        run: |
+          grep -r "API_KEY\|SECRET\|TOKEN" . || true

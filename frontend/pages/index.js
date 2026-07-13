@@ -1,6 +1,9 @@
 import { useState, useEffect, useRef } from 'react';
 import axios from 'axios';
 import ReactMarkdown from 'react-markdown';
+import { useRouter } from 'next/router';
+
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
@@ -18,7 +21,31 @@ export default function Home() {
   const [selectedSubject, setSelectedSubject] = useState('General');
   const [sessionId, setSessionId] = useState('');
   const messageEndRef = useRef(null);
-  
+  const router = useRouter();
+  const [checkingAuth, setCheckingAuth] = useState(true);
+  const [profile, setProfile] = useState(null);
+  const [availableSubjects, setAvailableSubjects] = useState([]);
+
+useEffect(() => {
+  const stored = localStorage.getItem('userProfile');
+
+  if (!stored) {
+    router.replace('/profile');
+    return;
+  }
+
+  const parsed = JSON.parse(stored);
+  setProfile(parsed);
+
+  if (parsed.preferredSubjects?.length > 0) {
+    setAvailableSubjects(parsed.preferredSubjects);
+    setSelectedSubject(parsed.preferredSubjects[0]);
+  }
+
+  setCheckingAuth(false);
+}, [router]);
+
+
 
   const fetchDashboardData = async () => {
   try {
@@ -34,7 +61,7 @@ export default function Home() {
   } catch (error) {
     console.error('Error loading dashboard:', error);
   }
-};
+  };
 
   // Fetch messages from the API
   const fetchMessages = async (sid) => {
@@ -133,11 +160,9 @@ export default function Home() {
     }
   };
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     messageEndRef.current?.scrollIntoView({ behavior: 'smooth' });
   }, [messages]);
-
 
   useEffect(() => {
   // Always start a brand new session on page load (no persistence)
@@ -165,6 +190,12 @@ useEffect(() => {
     handleOffline
   );
 
+  const stored = localStorage.getItem('userProfile');
+
+  if (stored) {
+    setProfile(JSON.parse(stored));
+  }
+
   return () => {
     window.removeEventListener(
       'offline',
@@ -172,146 +203,101 @@ useEffect(() => {
     );
   };
 
-}, []);
-
-
-  return (
-    <div style={{ maxWidth: '800px', margin: '0 auto', padding: '20px', fontFamily: 'Nunito, sans-serif' }}>
-      <h1 style={{ textAlign: 'center', color: '#333' }}>BrainBytes AI Tutor</h1>
-
-      <div
-  style={{
-    border: '1px solid #ddd',
-    borderRadius: '12px',
-    padding: '20px',
-    marginBottom: '20px',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-  }}
->
-
   
 
+  }, []);
+
+  if (checkingAuth) return <p>Checking authentication...</p>;
 
 
-
-  {/* <h2>User Profile</h2>
-
-  <input
-    type="text"
-    placeholder="Name"
-    value={name}
-    onChange={(e) => setName(e.target.value)}
-    style={{
-      width: '100%',
-      padding: '10px',
-      marginBottom: '10px',
-      borderRadius: '8px',
-      border: '1px solid #ccc'
-    }}
-  />
-
-  <input
-    type="email"
-    placeholder="Email"
-    value={email}
-    onChange={(e) => setEmail(e.target.value)}
-    style={{
-      width: '100%',
-      padding: '10px',
-      marginBottom: '10px',
-      borderRadius: '8px',
-      border: '1px solid #ccc'
-    }}
-  />
-
-  <input
-    type="text"
-    placeholder="Preferred Subjects (comma separated)"
-    value={preferredSubjects}
-    onChange={(e) => setPreferredSubjects(e.target.value)}
-    style={{
-      width: '100%',
-      padding: '10px',
-      marginBottom: '10px',
-      borderRadius: '8px',
-      border: '1px solid #ccc'
-    }}
-  />
-
-  <button
-    onClick={saveProfile}
-    style={{
-      padding: '12px 20px',
-      backgroundColor: '#4caf50',
-      color: 'white',
-      border: 'none',
-      borderRadius: '8px',
-      cursor: 'pointer'
-    }}
-  >
-    Save Profile
-  </button> */}
-
-</div>
-
-
-{/* DASHBOARD */}
-<div
-  style={{
-    border: '1px solid #ddd',
-    borderRadius: '12px',
+    return (
+  <div style={{
+    minHeight: '100vh',
+    backgroundColor: '#daf3f8',
+    margin: 0,
     padding: '20px',
-    marginBottom: '20px',
-    backgroundColor: '#ffffff',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-  }}
->
-
-  <h2>Learning Dashboard</h2>
-
-  <p>
-    <strong>Total Messages:</strong> {messageCount}
+    fontFamily: 'Nunito, sans-serif'
+  }}>
+        <h1 style={{ textAlign: 'center', color: '#333' }}>BrainBytes AI Tutor</h1>
+        {profile && (
+    <div
+      style={{
+        border: '1px solid #ddd',
+        borderRadius: '12px',
+        padding: '20px',
+        marginBottom: '20px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}
+    >
+      <h3 style={{ fontSize: '20px', fontWeight: 600 }}> Welcome, {profile.name}!</h3>
+      <p style={{ fontSize: '16px' }}>
+    <strong>Email:</strong> {profile.email}
   </p>
 
-  <h3>Recent Learning Activity</h3>
+  <p style={{ fontSize: '16px' }}>
+    <strong>Subjects:</strong>{' '}
+    {Array.isArray(profile.preferredSubjects)
+      ? profile.preferredSubjects.join(', ')
+      : profile.preferredSubjects}
+  </p>
+    </div>
+  )}
 
-  {recentActivity.length === 0 ? (
-    <p>No recent activity.</p>
-  ) : (
-    <ul style={{ paddingLeft: '20px' }}>
+
+    {/* DASHBOARD */}
+    <div
+      style={{
+        border: '1px solid #ddd',
+        borderRadius: '12px',
+        padding: '20px',
+        marginBottom: '20px',
+        backgroundColor: '#ffffff',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}
+    >
+
+      <h2 style={{ fontSize: '20px', fontWeight: 600 }}> Learning Dashboard</h2>
+
+      <p>
+        <strong> Total Messages:</strong> {messageCount}
+      </p>
+
+      <h3 style={{ fontSize: '16px', fontWeight: 600 }}>Recent Learning Activity</h3>
+
+      {recentActivity.length === 0 ? (
+        <p>No recent activity.</p>
+      ) : (
+        <ul style={{ paddingLeft: '20px', fontSize: '16px' }}>
       {recentActivity
         .slice(-5)
         .reverse()
         .map((activity) => (
           <li key={activity._id} style={{ marginBottom: '10px' }}>
-
             <strong>
               {activity.sender === 'user' ? 'You' : 'AI Tutor'}
             </strong>
-
             : {activity.text}
-
           </li>
         ))}
     </ul>
-  )}
+      )}
 
-</div>
+    </div>
 
 
-<div 
-  style={{ 
-    border: '1px solid #ddd',
-    borderRadius: '12px',
-    height: '500px',
-    overflowY: 'auto',
-    padding: '16px',
-    marginBottom: '20px',
-    backgroundColor: '#f9f9f9',
-    boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
-  }}
->
+    <div 
+      style={{ 
+        border: '1px solid #ddd',
+        borderRadius: '12px',
+        height: '500px',
+        overflowY: 'auto',
+        padding: '16px',
+        marginBottom: '20px',
+        backgroundColor: '#f9f9f9',
+        boxShadow: '0 2px 4px rgba(0,0,0,0.1)'
+      }}
+    >
         {loading ? (
           <div style={{ textAlign: 'center', padding: '20px' }}>
             <p>Loading conversation history...</p>
@@ -397,12 +383,22 @@ useEffect(() => {
       border: '1px solid #ccc'
     }}
   >
+   {availableSubjects.length > 0 ? (
+  availableSubjects.map((subject) => (
+    <option key={subject} value={subject}>
+      {subject}
+    </option>
+  ))
+) : (
+  <>
     <option value="General">General</option>
     <option value="Math">Math</option>
     <option value="Science">Science</option>
     <option value="History">History</option>
     <option value="Programming">Programming</option>
     <option value="English">English</option>
+  </>
+  )}
   </select>
 </div>
 
