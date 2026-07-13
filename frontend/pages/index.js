@@ -5,8 +5,6 @@ import { useRouter } from 'next/router';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:3000';
-
 export default function Home() {
   const [recentActivity, setRecentActivity] = useState([]);
   const [messageCount, setMessageCount] = useState(0);
