@@ -14,7 +14,7 @@ const PORT = process.env.PORT || 3000;
 aiService.initializeAI();
 
 // Connect to MongoDB
-mongoose.connect('mongodb://mongo:27017/brainbytes', {
+mongoose.connect(process.env.MONGO_URL || 'mongodb://mongo:27017/brainbytes', {
   useNewUrlParser: true,
   useUnifiedTopology: true,
   retryWrites: true
