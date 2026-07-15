@@ -1,0 +1,11 @@
+groups:
+  - name: brainbytes_recording_rules
+    interval: 30s
+    rules:
+      # Average AI response time over 5 minutes
+      - record: brainbytes:ai_response_time:avg5m
+        expr: rate(brainbytes_ai_response_duration_seconds_sum[5m]) / rate(brainbytes_ai_response_duration_seconds_count[5m])
+
+      # Total messages per minute
+      - record: brainbytes:messages:rate1m
+        expr: rate(brainbytes_messages_total[1m])
