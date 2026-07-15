@@ -1,9 +1,29 @@
-
 const Message = require('../models/Message');
 const aiService = require('../aiService');
+const client = require('prom-client');
 
-// Send a message and get AI response
+// Use default registry
+const messagesTotal = new client.Counter({
+  name: 'brainbytes_messages_total',
+  help: 'Total number of messages sent in BrainBytes',
+  labelNames: ['sender', 'category'],
+  registers: [client.register]
+});
+
+const aiResponseDuration = new client.Histogram({
+  name: 'brainbytes_ai_response_duration_seconds',
+  help: 'Time taken for the AI tutor to generate a response',
+  buckets: [0.5, 1, 2, 5, 10, 15],
+  registers: [client.register]
+});
+
+const activeSessions = new client.Gauge({
+  name: 'brainbytes_active_sessions',
+  help: 'Number of currently active BrainBytes chat sessions',
+  registers: [client.register]
+});
 exports.sendMessage = async (req, res) => {
+  console.log('sendMessage called!');
   try {
     const { message, sessionId, category } = req.body;
     
@@ -11,10 +31,9 @@ exports.sendMessage = async (req, res) => {
       return res.status(400).json({ error: 'Message is required' });
     }
 
-    // Generate a session ID if not provided
     const chatSessionId = sessionId || Date.now().toString();
+    activeSessions.inc();
 
-    // Save user message to database
     const userMessage = new Message({
       text: message,
       sender: 'user',
@@ -25,18 +44,15 @@ exports.sendMessage = async (req, res) => {
     });
     await userMessage.save();
 
-    // Get AI response from our existing service
+    messagesTotal.inc({ sender: 'user', category: category || 'General' });
+
     let aiResult;
+    const endTimer = aiResponseDuration.startTimer();
     try {
-      // Create a 10-second timeout for AI response
       const timeoutPromise = new Promise((_, reject) => 
         setTimeout(() => reject(new Error('Request timeout')), 10000)
       );
-      
-      const aiResultPromise = aiService.generateResponse(
-          message,
-          category
-        );
+      const aiResultPromise = aiService.generateResponse(message, category);
       aiResult = await Promise.race([aiResultPromise, timeoutPromise]);
     } catch (error) {
       console.error('Error getting AI response:', error);
@@ -44,9 +60,10 @@ exports.sendMessage = async (req, res) => {
         category: 'error',
         response: "I'm sorry, but I couldn't process your request in time. Please try again with a simpler question."
       };
+    } finally {
+      endTimer();
     }
 
-    // Save AI response to database
     const aiMessage = new Message({
       text: aiResult.response,
       sender: 'ai',
@@ -57,7 +74,9 @@ exports.sendMessage = async (req, res) => {
     });
     await aiMessage.save();
 
-    // Return both messages
+    messagesTotal.inc({ sender: 'ai', category: category || 'General' });
+    activeSessions.dec();
+
     res.status(200).json({
       userMessage,
       aiMessage,
@@ -70,7 +89,6 @@ exports.sendMessage = async (req, res) => {
   }
 };
 
-// Get chat history for a session
 exports.getChatHistory = async (req, res) => {
   try {
     const { sessionId } = req.params;

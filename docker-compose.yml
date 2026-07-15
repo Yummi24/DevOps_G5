@@ -8,6 +8,8 @@ services:
     volumes:
       - ./frontend:/usr/src/app
       - /usr/src/app/node_modules
+    environment:
+      - NEXT_PUBLIC_API_URL=http://backend:3000
     depends_on:
       - backend
     restart: unless-stopped
@@ -35,14 +37,12 @@ services:
       - mongo-data:/data/db
     restart: unless-stopped
 
-  # Prometheus - metrics collection
+  # Prometheus - built from custom Dockerfile
   prometheus:
-    image: prom/prometheus:latest
+    build: ./monitoring
     ports:
       - "9090:9090"
     volumes:
-      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
-      - ./monitoring/recording_rules.yml:/etc/prometheus/recording_rules.yml
       - prometheus-data:/prometheus
     command:
       - '--config.file=/etc/prometheus/prometheus.yml'
@@ -52,7 +52,7 @@ services:
       - backend
     restart: unless-stopped
 
-  # Node Exporter - server metrics (CPU, memory, disk)
+  # Node Exporter
   node-exporter:
     image: prom/node-exporter:latest
     ports:
@@ -67,7 +67,7 @@ services:
       - '--collector.filesystem.mount-points-exclude=^/(sys|proc|dev|host|etc)($$|/)'
     restart: unless-stopped
 
-  # cAdvisor - Docker container metrics
+  # cAdvisor
   cadvisor:
     image: gcr.io/cadvisor/cadvisor:latest
     ports:
