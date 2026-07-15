@@ -19,7 +19,8 @@
     "express": "^4.17.1",
     "mongoose": "^5.13.7",
     "node-fetch": "^2.6.7",
-    "openai": "^6.37.0"
+    "openai": "^6.37.0",
+    "prom-client": "^14.2.0"
   },
   "devDependencies": {
     "eslint": "^9.39.4",
