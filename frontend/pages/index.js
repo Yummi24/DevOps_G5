@@ -304,7 +304,7 @@ useEffect(() => {
           <div>
             {messages.length === 0 ? (
               <div style={{ textAlign: 'center', padding: '40px 20px' }}>
-                <h3>Welcome to BrainBytes AI Tutor!</h3>
+                <h3>Hello, Welcome to BrainBytes AI Tutor!</h3>
                 <p>Ask me any question about math, science, or history.</p>
               </div>
             ) : (
