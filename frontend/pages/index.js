@@ -216,7 +216,7 @@ useEffect(() => {
     padding: '20px',
     fontFamily: 'Nunito, sans-serif'
   }}>
-        <h1 style={{ textAlign: 'center', color: '#333' }}>BrainBytes AI Tutor</h1>
+        <h1 style={{ textAlign: 'center', color: '#333' }}>BrainBytes AI Tutor Demo</h1>
         {profile && (
     <div
       style={{
