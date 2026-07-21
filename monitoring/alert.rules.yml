@@ -1,0 +1,22 @@
+groups:
+  - name: BrainBytesAlerts
+    rules:
+      # Layer 1: Service Downtime Alert
+      - alert: ContainerInstanceDown
+        expr: up == 0
+        for: 1m
+        labels:
+          severity: critical
+        annotations:
+          summary: "DevOps Container instance down"
+          description: "A core service target has been unreachable for more than 1 minute."
+
+      # Layer 2: Infrastructure Resource Spike Alert
+      - alert: HighCPUUtilization
+        expr: container_cpu_usage_seconds_total > 80
+        for: 2m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High CPU Usage Detected"
+          description: "Container environment resource consumption has exceeded 80% load."
